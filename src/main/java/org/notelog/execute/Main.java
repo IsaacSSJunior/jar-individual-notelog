@@ -1,6 +1,7 @@
 package org.notelog.execute;
 
 import com.github.britooo.looca.api.core.Looca;
+import com.github.britooo.looca.api.group.janelas.Janela;
 import com.github.britooo.looca.api.group.processos.Processo;
 import org.notelog.entidades.cpu.Cpu;
 import org.notelog.entidades.cpu.CpuDAO;
@@ -392,13 +393,12 @@ public class Main {
 
                     processosBloqueados.add("Spotify");
 
-                    for (Processo process : processGroup.getGrupoDeProcessos().getProcessos()) {
+                    for (Janela process : processGroup.getGrupoDeJanelas().getJanelas()) {
 
                         for (int i = 0; i < processosBloqueados.size(); i ++) {
-                            processoDaVez = func.obterNomeDoProcessoPorPIDLixux(process.getPid());
-                            if (processoDaVez.contains(processosBloqueados.get(i))) {
+                            if (process.getTitulo().contains(processosBloqueados.get(i))) {
                                 func.encerraProcesso(Math.toIntExact(process.getPid()));
-                                System.out.println("Processo " + process.getNome() + " foi encerrado por violar as políticas da empresa!");
+                                System.out.println("Processo " + process.getTitulo() + " foi encerrado por violar as políticas da empresa!");
                                 Thread.sleep(3000);
                             }
 
