@@ -1,15 +1,14 @@
 package org.notelog.execute;
 
 import com.github.britooo.looca.api.core.Looca;
-import com.github.britooo.looca.api.group.janelas.Janela;
+import com.github.britooo.looca.api.group.processos.Processo;
 import org.notelog.entidades.cpu.Cpu;
 import org.notelog.entidades.cpu.CpuDAO;
 import org.notelog.entidades.disco.rigido.DiscoRigidoDAO;
 import org.notelog.entidades.logs.cpu.LogCpu;
 import org.notelog.entidades.logs.cpu.LogCpuDAO;
 import org.notelog.entidades.logs.disco.LogDiscoDAO;
-import org.notelog.entidades.logs.janelas.FucionalidadeConsole;
-import org.notelog.entidades.logs.janelas.LogJanelas;
+import org.notelog.entidades.logs.janelas.BloqueiaProcessos;
 import org.notelog.entidades.logs.janelas.LogJanelasDAO;
 import org.notelog.entidades.logs.ram.LogRam;
 import org.notelog.entidades.logs.ram.LogRamDAO;
@@ -31,6 +30,11 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws InterruptedException, IOException {
+
+        String[] command = {"bash", "-c", "exec -a ProcessoIndevido while true; do sleep 1; done"};
+        ProcessBuilder processBuilder = new ProcessBuilder(command);
+        Process process = processBuilder.start();
+
 
         // Título em ASCII
         System.out.println("""
@@ -381,34 +385,32 @@ public class Main {
     }
 
     private static void bloquearProcessosindevidos(Usuario usuario) throws InterruptedException, IOException {
-        String[] command = {"bash", "-c", "while true; do sleep 1; done"};
-        ProcessBuilder processBuilder = new ProcessBuilder(command);
-        Process process = processBuilder.start();
-        process.waitFor();
-
         // Thread para verificar e encerrar processos bloqueados
             while (true) {
-                try {
-                    Looca janelaGroup = new Looca();
-                    FucionalidadeConsole func = new FucionalidadeConsole();
+//                try {
+                    Looca processGroup = new Looca();
+                    BloqueiaProcessos func = new BloqueiaProcessos();
 
                     List<String> processosBloqueados = new ArrayList<>();
-                    processosBloqueados.add("bash");
-                    // Adicione aqui a lógica para preencher a lista de processos bloqueados
 
-                    for (Janela janela : janelaGroup.getGrupoDeJanelas().getJanelas()) {
-                        for (String processo : processosBloqueados) {
-                            if (janela.getTitulo().contains(processo)) {
-                                func.encerraProcesso(Math.toIntExact(janela.getPid()));
-                                System.out.println("Processo - " + janela.getTitulo() + " encerrado, Motivo: Violou políticas da empresa.");
+                    processosBloqueados.add("ProcessoIndevido");
+
+                    for (Processo process : processGroup.getGrupoDeProcessos().getProcessos()) {
+                        for (int i = 0; i < processosBloqueados.size(); i ++) {
+                            if (process.getNome().contains(processosBloqueados.get(i))) {
+                                func.encerraProcesso(Math.toIntExact(process.getPid()));
+                                System.out.println("Processo " + process.getNome() + " foi encerrado por violar as políticas da empresa!");
                                 Thread.sleep(3000);
                             }
                         }
                     }
-                    Thread.sleep(1000); // Espera 1 segundo antes de verificar novamente
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+
+                    return;
+
+
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
             }
 
     }
