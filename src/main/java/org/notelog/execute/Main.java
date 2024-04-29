@@ -31,11 +31,6 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) throws InterruptedException, IOException {
 
-        String[] command = {"bash", "-c", "exec -a ProcessoIndevido while true; do sleep 1; done"};
-        ProcessBuilder processBuilder = new ProcessBuilder(command);
-        Process process = processBuilder.start();
-
-
         // Título em ASCII
         System.out.println("""
                             _____                   _______           _____                    _____                    _____     _______                   _____         \s
@@ -393,15 +388,20 @@ public class Main {
 
                     List<String> processosBloqueados = new ArrayList<>();
 
-                    processosBloqueados.add("ProcessoIndevido");
+                    String processoDaVez;
+
+                    processosBloqueados.add("Spotify");
 
                     for (Processo process : processGroup.getGrupoDeProcessos().getProcessos()) {
+
                         for (int i = 0; i < processosBloqueados.size(); i ++) {
-                            if (process.getNome().contains(processosBloqueados.get(i))) {
+                            processoDaVez = func.obterNomeDoProcessoPorPIDLixux(process.getPid());
+                            if (processoDaVez.contains(processosBloqueados.get(i))) {
                                 func.encerraProcesso(Math.toIntExact(process.getPid()));
                                 System.out.println("Processo " + process.getNome() + " foi encerrado por violar as políticas da empresa!");
                                 Thread.sleep(3000);
                             }
+
                         }
                     }
 

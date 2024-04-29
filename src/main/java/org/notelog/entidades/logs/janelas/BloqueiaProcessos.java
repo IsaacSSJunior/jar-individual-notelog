@@ -11,7 +11,7 @@ public class BloqueiaProcessos {
 
     // Encerrar processo por PID
 
-    public static String obterNomeDoProcessoPorPIDLixux(int pid) {
+    public String obterNomeDoProcessoPorPIDLixux(int pid) {
         String nomeDoProcesso = "Desconhecido";
         BufferedReader reader = null;
 
@@ -50,7 +50,7 @@ public class BloqueiaProcessos {
         return nomeDoProcesso;
     }
 
-    public static String obterNomeDoProcessoPorPID(int pid) {
+    public String obterNomeDoProcessoPorPIDWindows(int pid) {
         Kernel32 kernel32 = Kernel32.INSTANCE;
         Tlhelp32.PROCESSENTRY32.ByReference processEntry = new Tlhelp32.PROCESSENTRY32.ByReference();
 
