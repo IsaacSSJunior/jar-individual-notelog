@@ -21,7 +21,7 @@ public class Conexao {
         */
 
         dataSource.setUrl("jdbc:mysql://localhost:3306/notelog");
-        dataSource.setUsername("noteloguser");
+        dataSource.setUsername("notelogUser");
         dataSource.setPassword("notelikeagod");
 
 
